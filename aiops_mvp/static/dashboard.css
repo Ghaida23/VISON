@@ -4,7 +4,6 @@ body {
     background: #f4f7f8;
 }
 
-/* Navbar */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -31,7 +30,6 @@ body {
     height: 60px;
 }
 
-/* زر تسجيل الخروج كأيقونة */
 .profile {
     display: flex;
     align-items: center;
@@ -50,7 +48,7 @@ body {
     border-radius: 50%;
     align-items: center;
     justify-content: center;
-    background-color: #e74c3c;   /* أحمر */
+    background-color: #e74c3c;   
     color: #fff;
     text-decoration: none;
     font-size: 16px;
@@ -66,10 +64,9 @@ body {
     margin: 30px auto;
 }
 
-/* Summary Cards */
 .summary-section {
     display: flex;
-    justify-content: center;   /* البطاقات في النص */
+    justify-content: center;   
     gap: 20px;
     margin-bottom: 40px;
 }
@@ -83,7 +80,6 @@ body {
     box-shadow: 0 3px 8px rgba(0,0,0,0.12);
 }
 
-/* Table */
 table {
     background: white;
     width: 100%;
@@ -104,7 +100,6 @@ table td {
     text-align: center;
 }
 
-/* الإجراءات */
 .actions-cell {
     display: flex;
     justify-content: center;
@@ -113,7 +108,6 @@ table td {
     flex-wrap: nowrap;
 }
 
-/* Status */
 .status {
     padding: 6px 12px;
     border-radius: 8px;
@@ -125,7 +119,6 @@ table td {
 .status.in_progress { background: #b92929; }
 .status.resolved { background: #16a085; }
 
-/* =========== Buttons (نفس المقاس لكل أزرار الجدول) =========== */
 
 .btn-accept,
 .btn-reject,
@@ -135,8 +128,8 @@ table td {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 90px;    /* نفس العرض */
-    height: 32px;       /* نفس الارتفاع */
+    min-width: 90px;    
+    height: 32px;       
     padding: 0 12px;
     border-radius: 6px;
     font-size: 12px;
@@ -144,7 +137,6 @@ table td {
     cursor: pointer;
 }
 
-/* ألوان الأزرار */
 
 .btn-accept {
     background: #2ecc71;
@@ -171,7 +163,6 @@ table td {
     text-decoration: none;
 }
 
-/* زر تفاصيل بشكل إطار أبيض */
 .btn-details {
     background: #ffffff;
     color: #2a6f75;
@@ -184,7 +175,6 @@ table td {
     color: #ffffff;
 }
 
-/* Notification */
 .notification-wrapper {
     position: relative;
     cursor: pointer;
@@ -248,7 +238,6 @@ table td {
     font-weight: 500;
 }
 
-/* Modal */
 .modal {
     display: none;
     position: fixed;
@@ -267,3 +256,4 @@ table td {
     padding: 20px;
     border-radius: 12px;
 }
+
