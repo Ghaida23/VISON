@@ -23,11 +23,11 @@ st.set_page_config(
 )
 
 # =========================================================
-# 0.2) تنسيق الألوان (أخضر + أبيض قريب من ثيم أبشر)
+# 0.2) تنسيق 
 # =========================================================
-ABSHEER_DARK = "#021A11"   # خلفية رئيسية داكنة
+ABSHEER_DARK = "#021A11"   
 ABSHEER_SIDEBAR = "#041F16"
-ABSHEER_PRIMARY = "#00C38A"  # أخضر مميز
+ABSHEER_PRIMARY = "#00C38A"
 TEXT_COLOR = "#FFFFFF"
 
 custom_css = f"""
@@ -65,7 +65,7 @@ st.markdown(custom_css, unsafe_allow_html=True)
 # =========================================================
 @st.cache_resource
 def load_model():
-    # نستخدم المسار الصحيح لملف المودل داخل model/
+    
     artifacts = joblib.load(MODEL_FILE)
     model = artifacts["model"]
     scaler = artifacts["scaler"]
@@ -124,16 +124,16 @@ def generate_fake_cpu_data(n_points=100, with_anomalies=True, anomaly_ratio=0.05
 def add_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
-    # المتوسط المتحرك لـ 12 نقطة
+
     df["rolling_mean_12"] = df["value"].rolling(window=12, min_periods=1).mean()
 
-    # الانحراف المعياري (أول قيم ممكن تكون NaN)
+  
     df["rolling_std_12"] = df["value"].rolling(window=12, min_periods=2).std()
 
-    # الفرق بين كل نقطة والتي قبلها
+  
     df["diff_1"] = df["value"].diff()
 
-    # تعويض أي NaN بقيم آمنة
+
     df["rolling_std_12"] = df["rolling_std_12"].fillna(0)
     df["diff_1"] = df["diff_1"].fillna(0)
 
@@ -145,16 +145,16 @@ def add_features(df: pd.DataFrame) -> pd.DataFrame:
 def predict_anomalies(df_raw: pd.DataFrame) -> pd.DataFrame:
     df_feat = add_features(df_raw)
 
-    # اختيار الأعمدة اللي تدرب عليها المودل
+   
     X = df_feat[feature_cols].copy()
 
-    # احتياط: تعويض أي NaN بصفر
+
     X = X.fillna(0)
 
-    # نفس الـ scaler المحفوظ
+ 
     X_scaled = scaler.transform(X.values)
 
-    # المودل يرجّع 1 (طبيعي) أو -1 (شاذ)
+
     preds = iso_forest.predict(X_scaled)
 
     df_feat["prediction"] = preds
@@ -166,7 +166,7 @@ def predict_anomalies(df_raw: pd.DataFrame) -> pd.DataFrame:
 header_col_logo, header_col_title = st.columns([1, 5])
 
 with header_col_logo:
-    st.image("model/logo.png", width=130)   # اللوقو في نفس فولدر model
+    st.image("model/logo.png", width=130)   
 
 with header_col_title:
     st.markdown(
@@ -264,7 +264,7 @@ st.subheader("📈 مخطط قراءات CPU مع تمييز الشذوذ")
 
 fig, ax = plt.subplots(figsize=(11, 4))
 
-# خط القيم الأساسية
+
 ax.plot(
     df_pred["timestamp"],
     df_pred["value"],
@@ -274,11 +274,11 @@ ax.plot(
     label="CPU value"
 )
 
-# نقاط طبيعية / شاذة
+
 normal_points = df_pred[df_pred["prediction"] == 1]
 anom_points   = df_pred[df_pred["prediction"] == -1]
 
-# نقاط طبيعية
+
 ax.scatter(
     normal_points["timestamp"],
     normal_points["value"],
@@ -287,7 +287,7 @@ ax.scatter(
     label="Normal"
 )
 
-# نقاط شاذة: نرسمها فقط لو موجودة
+
 if len(anom_points) > 0:
     ax.scatter(
         anom_points["timestamp"],
