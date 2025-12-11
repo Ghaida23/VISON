@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة التحكم - IT</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- ✅ شريط التنقّل -->
+<nav class="navbar">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
+    </div>
+
+    <div class="nav-links">
+        <a href="/dashboard" class="active">اللوحة الرئيسية</a>
+    </div>
+
+    <div class="profile">
+        <span class="user-name">{{ user_name }}</span>
+
+        <!-- زر تسجيل الخروج كأيقونة حمراء -->
+        <a href="/logout" class="logout-btn" title="تسجيل الخروج">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+
+        <div class="notification-wrapper" id="notifBell">
+            <i class="fa fa-bell"></i>
+            <span id="notifCount" class="notif-count" style="display:none;">0</span>
+
+            <div id="notifDropdown" class="notif-dropdown">
+                <p class="notif-title">التنبيهات</p>
+                <div id="notifList"></div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- ✅ البطاقات الإحصائية -->
+    <div class="summary-section">
+        <div class="card">
+            <h3>النشطة</h3>
+            <p>{{ active }}</p>
+        </div>
+
+        <div class="card">
+            <h3>الجديدة</h3>
+            <p>{{ new }}</p>
+        </div>
+
+        <div class="card">
+            <h3>المحلولة</h3>
+            <p>{{ resolved }}</p>
+        </div>
+    </div>
+
+    <!-- ✅ آخر التذاكر -->
+    <h2>آخر التذاكر</h2>
+
+    <table class="tickets-table">
+
+        <thead>
+        <tr>
+            <th>رقم</th>
+            <th>الموضوع</th>
+            <th>الحالة</th>
+            <th>البلاغ من قبل</th>
+            <th>الإجراءات</th>
+            <th>تفاصيل</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for t in tickets %}
+            <tr>
+                <td>{{ t.ticket_id }}</td>
+                <td>{{ t.title }}</td>
+
+                <td>
+                    <span class="status {{ t.status|lower|replace(' ', '_') }}">
+                        {{ t.status }}
+                    </span>
+                </td>
+
+                <td>{{ t.owner_name }}</td>
+
+                <!-- عمود الإجراءات فقط -->
+                <td class="actions-cell">
+
+                    {# ✅ التذكرة جديدة #}
+                    {% if t.status == 'New' %}
+
+                        <form action="/accept_ticket/{{ t.ticket_id }}" method="POST"
+                              style="display:inline-block;">
+                            <button type="submit" class="btn-accept">قبول</button>
+                        </form>
+
+                        <a href="/chat/{{ t.ticket_id }}" class="btn-chat">مراسلة</a>
+
+                    {# ✅ التذكرة تحت المعالجة #}
+                    {% elif t.status == 'In Progress' %}
+
+                        <form action="/resolve_ticket/{{ t.ticket_id }}" method="POST"
+                              style="display:inline-block;">
+                            <button type="submit" class="btn-resolve">إنهاء</button>
+                        </form>
+
+                        <a href="/chat/{{ t.ticket_id }}" class="btn-chat">مراسلة</a>
+
+                    {# ✅ التذكرة منتهية (محلولة/مرفوضة) #}
+                    {% else %}
+                        <a href="/chat/{{ t.ticket_id }}" class="btn-chat">مراسلة</a>
+                    {% endif %}
+                </td>
+
+                <!-- عمود التفاصيل فقط -->
+                <td>
+                    <button type="button"
+                            class="btn-details"
+                            onclick="openTicketDetails(this)"
+                            data-id="{{ t.ticket_id }}"
+                            data-title="{{ t.title|e }}"
+                            data-desc="{{ t.description|e }}"
+                            data-category="{{ t.category }}"
+                            data-priority="{{ t.priority }}"
+                            data-status="{{ t.status }}"
+                            data-owner="{{ t.owner_name|e }}"
+                            data-created="{{ t.created_at }}">
+                        تفاصيل
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ✅ التذاكر التي قمت بحلّها -->
+    <h2 style="margin-top:40px;">التذاكر التي قمتُ بحلّها</h2>
+
+    <table class="tickets-table">
+
+        <thead>
+        <tr>
+            <th>رقم</th>
+            <th>الموضوع</th>
+            <th>صاحب البلاغ</th>
+            <th>إجراء</th>
+            <th>تفاصيل</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for t in resolved_list %}
+            <tr>
+                <td>{{ t.ticket_id }}</td>
+                <td>{{ t.title }}</td>
+                <td>{{ t.owner_name }}</td>
+
+                <!-- عمود الإجراء -->
+                <td>
+                    <a href="/chat/{{ t.ticket_id }}" class="btn-chat">مراسلة</a>
+                </td>
+
+                <!-- عمود التفاصيل -->
+                <td>
+                    <button type="button"
+                            class="btn-details"
+                            onclick="openTicketDetails(this)"
+                            data-id="{{ t.ticket_id }}"
+                            data-title="{{ t.title|e }}"
+                            data-desc="{{ t.description|e }}"
+                            data-category="{{ t.category }}"
+                            data-priority="{{ t.priority }}"
+                            data-status="{{ t.status }}"
+                            data-owner="{{ t.owner_name|e }}"
+                            data-created="{{ t.created_at }}">
+                        تفاصيل
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+
+        {% if resolved_list|length == 0 %}
+            <tr>
+                <td colspan="5" style="text-align:center;color:#888;">
+                    لا توجد تذاكر محلولة لديك حتى الآن
+                </td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+</div>
+
+<!-- ✅ نافذة تفاصيل التذكرة (مودال) -->
+<div id="ticketDetailsModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeTicketDetails()">&times;</span>
+        <h3>تفاصيل التذكرة</h3>
+
+        <p><strong>رقم التذكرة:</strong> <span id="d_ticket_id"></span></p>
+        <p><strong>العنوان:</strong> <span id="d_title"></span></p>
+        <p><strong>الوصف:</strong> <span id="d_desc"></span></p>
+        <p><strong>الفئة:</strong> <span id="d_category"></span></p>
+        <p><strong>الأولوية:</strong> <span id="d_priority"></span></p>
+        <p><strong>الحالة:</strong> <span id="d_status"></span></p>
+        <p><strong>صاحب البلاغ:</strong> <span id="d_owner"></span></p>
+        <p><strong>تاريخ الإنشاء:</strong> <span id="d_created"></span></p>
+    </div>
+</div>
+
+<script>
+/* ✅ تحميل التنبيهات */
+document.addEventListener("DOMContentLoaded", function () {
+    const bell       = document.getElementById("notifBell");
+    const dropdown   = document.getElementById("notifDropdown");
+    const notifList  = document.getElementById("notifList");
+    const notifCount = document.getElementById("notifCount");
+
+    if (!bell || !dropdown || !notifList || !notifCount) {
+        console.error("أحد عناصر التنبيهات غير موجود في الصفحة");
+        return;
+    }
+
+    bell.addEventListener("click", function (e) {
+        e.stopPropagation();
+        dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+    });
+
+    document.addEventListener("click", function () {
+        dropdown.style.display = "none";
+    });
+
+    setInterval(loadNotifications, 5000);
+    loadNotifications();
+
+    function loadNotifications() {
+        fetch("/get_notifications")
+            .then(res => res.json())
+            .then(data => {
+                notifList.innerHTML = "";
+
+                if (data.count > 0) {
+                    notifCount.style.display = "inline-block";
+                    notifCount.innerText = data.count;
+                } else {
+                    notifCount.style.display = "none";
+                    notifList.innerHTML = "<p>لا توجد تنبيهات</p>";
+                    return;
+                }
+
+                data.notifications.forEach(n => {
+                    let notifId  = n[0];
+                    let ticketId = n[1];
+                    let message  = n[2];
+
+                    if (!ticketId) return;
+
+                    let div = document.createElement("div");
+                    div.className = "notif-item";
+                    div.innerText = message;
+
+                    div.onclick = () => {
+                        fetch(`/mark_notification/${notifId}`);
+                        window.location.href = `/chat/${ticketId}`;
+                    };
+
+                    notifList.appendChild(div);
+                });
+            });
+    }
+});
+
+/* ✅ مودال الرفض (لو استخدمتيه لاحقًا) */
+function openRejectPopup(ticketId) {
+    document.getElementById("rejectModal").style.display = "block";
+    document.getElementById("rejectForm").action = "/reject_ticket/" + ticketId;
+}
+
+function closeRejectPopup() {
+    document.getElementById("rejectModal").style.display = "none";
+}
+
+/* ✅ فتح تفاصيل التذكرة في بوب-أب */
+function openTicketDetails(btn) {
+    document.getElementById("d_ticket_id").innerText = btn.dataset.id;
+    document.getElementById("d_title").innerText     = btn.dataset.title;
+    document.getElementById("d_desc").innerText      = btn.dataset.desc;
+    document.getElementById("d_category").innerText  = btn.dataset.category;
+    document.getElementById("d_priority").innerText  = btn.dataset.priority;
+    document.getElementById("d_status").innerText    = btn.dataset.status;
+    document.getElementById("d_owner").innerText     = btn.dataset.owner;
+    document.getElementById("d_created").innerText   = btn.dataset.created;
+
+    document.getElementById("ticketDetailsModal").style.display = "block";
+}
+
+function closeTicketDetails() {
+    document.getElementById("ticketDetailsModal").style.display = "none";
+}
+
+/* ✅ إغلاق المودال عند الضغط على الخلفية */
+window.addEventListener("click", function (e) {
+    const modal = document.getElementById("ticketDetailsModal");
+    if (e.target === modal) {
+        modal.style.display = "none";
+    }
+});
+</script>
+
+</body>
+</html>

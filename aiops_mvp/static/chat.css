@@ -1,0 +1,223 @@
+body {
+    background: #f4f7f8;
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+}
+
+/* Navbar نفس ستايل بقية الصفحات */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2a6f75;
+    padding: 15px 30px;
+    color: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.logo img {
+    height: 55px;
+}
+
+.nav-links a {
+    margin: 0 18px;
+    color: #e5e5e5;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.nav-links a:hover,
+.nav-links .active {
+    color: #ffffff;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 4px;
+}
+
+/* اسم + خروج + جرس */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    direction: rtl;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.user-name {
+    font-weight: 500;
+}
+
+.logout-btn {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background-color: #e74c3c;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.logout-btn:hover {
+    opacity: 0.9;
+}
+
+/* التنبيهات */
+
+.notification-wrapper {
+    position: relative;
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.notif-count {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    background: red;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.notif-dropdown {
+    display: none;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    background: white;
+    width: 260px;
+    max-height: 320px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    z-index: 9999;
+}
+
+.notif-title {
+    text-align: center;
+    color: #2a6f75;
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notif-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+    font-size: 14px;
+    color: #2a2a2a;
+}
+
+.notif-item:hover {
+    background: #f4f7f8;
+}
+
+#notifList p {
+    color: #888;
+    text-align: center;
+    font-size: 14px;
+    padding: 15px 10px;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* ===== Layout الشات ===== */
+
+.chat-container {
+    width: 60%;
+    margin: 40px auto;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.chat-container h2 {
+    margin-top: 0;
+    text-align: center;
+    color: #2a6f75;
+}
+
+/* زر رجوع */
+.back-btn {
+    display: inline-block;
+    margin: 10px 0 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #2a6f75;
+    text-decoration: none;
+}
+
+.back-btn:hover {
+    color: #1e5155;
+}
+
+/* Messages */
+.messages-box {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    max-height: 350px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.message {
+    background: #e2ecec;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.sender {
+    font-weight: bold;
+    color: #2a6f75;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.text {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.time {
+    font-size: 12px;
+    color: gray;
+    float: left;
+}
+
+/* Send Box */
+.send-box textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    font-family: inherit;
+}
+
+.send-box button {
+    background: #2a6f75;
+    color: white;
+    padding: 12px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.send-box button:hover {
+    background: #245e62;
+}

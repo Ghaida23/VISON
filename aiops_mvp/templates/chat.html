@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>المحادثة</title>
+    <link rel="stylesheet" href="/static/chat.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">
+        <img src="/static/images/logo.png" alt="logo">
+    </div>
+
+    <div class="nav-links">
+        {% if not is_it %}
+            <a href="/my_tickets">بلاغاتي</a>
+            <a href="/create_ticket">بلاغ جديد</a>
+        {% else %}
+            <a href="/dashboard">لوحة التحكم</a>
+        {% endif %}
+    </div>
+
+    <div class="profile">
+        <span class="user-name">{{ user_name }}</span>
+
+        <a href="/logout" class="logout-btn" title="تسجيل الخروج">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+
+        <div class="notification-wrapper" id="notifBell">
+            <i class="fa fa-bell"></i>
+            <span id="notifCount" class="notif-count" style="display:none;">0</span>
+
+            <div id="notifDropdown" class="notif-dropdown">
+                <p class="notif-title">التنبيهات</p>
+                <div id="notifList"></div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="chat-container">
+
+    <h2>المحادثة الخاصة بالبلاغ رقم {{ ticket_id }}</h2>
+
+    <a class="back-btn" onclick="history.back()">⬅ رجوع</a>
+
+    <div class="messages-box">
+        {% for m in messages %}
+        <div class="message">
+            <span class="sender">{{ m.sender_name }}</span>
+            <span class="text">{{ m.text }}</span>
+            <span class="time">{{ m.time }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <form method="POST" class="send-box">
+        <textarea name="message_text" placeholder="اكتب رسالتك هنا..." required></textarea>
+        <button type="submit">إرسال</button>
+    </form>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const bell       = document.getElementById("notifBell");
+    const dropdown   = document.getElementById("notifDropdown");
+    const notifList  = document.getElementById("notifList");
+    const notifCount = document.getElementById("notifCount");
+
+    if (!bell || !dropdown || !notifList || !notifCount) {
+        console.error("أحد عناصر التنبيهات غير موجود في الصفحة");
+        return;
+    }
+
+    bell.addEventListener("click", function (e) {
+        e.stopPropagation();
+        dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
+    });
+
+    document.addEventListener("click", function () {
+        dropdown.style.display = "none";
+    });
+
+    loadNotifications();
+    setInterval(loadNotifications, 5000);
+
+    function loadNotifications() {
+        fetch("/get_notifications")
+            .then(res => res.json())
+            .then(data => {
+
+                notifList.innerHTML = "";
+
+                if (data.count > 0) {
+                    notifCount.style.display = "inline-block";
+                    notifCount.innerText = data.count;
+                } else {
+                    notifCount.style.display = "none";
+                    notifList.innerHTML = "<p>لا توجد تنبيهات</p>";
+                    return;
+                }
+
+                data.notifications.forEach(n => {
+                    let notifId  = n[0];
+                    let ticketId = n[1];
+                    let message  = n[2];
+
+                    if (!ticketId) return;
+
+                    let div = document.createElement("div");
+                    div.className = "notif-item";
+                    div.innerText = message;
+
+                    div.onclick = () => {
+                        fetch(`/mark_notification/${notifId}`);
+                        window.location.href = `/chat/${ticketId}`;
+                    };
+
+                    notifList.appendChild(div);
+                });
+            });
+    }
+});
+</script>
+
+</body>
+</html>

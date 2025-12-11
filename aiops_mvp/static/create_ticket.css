@@ -1,0 +1,341 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #f4f7f8;
+}
+
+html[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+/* ===== Navbar موحّد ===== */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #2a6f75;
+    padding: 15px 30px;
+    color: white;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.logo img {
+    height: 55px;
+    width: auto;
+}
+
+.nav-links a {
+    margin: 0 18px;
+    color: #e5e5e5;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.nav-links a:hover,
+.nav-links .active {
+    color: #ffffff;
+    border-bottom: 2px solid #fff;
+    padding-bottom: 4px;
+}
+
+/* اسم المستخدم + أيقونة خروج + جرس */
+
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    direction: rtl;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.user-name {
+    font-weight: 500;
+}
+
+.logout-btn {
+    display: inline-flex;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    background-color: #e74c3c;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.logout-btn:hover {
+    opacity: 0.9;
+}
+
+/* التنبيهات */
+
+.notification-wrapper {
+    position: relative;
+    cursor: pointer;
+    font-size: 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+}
+
+.notif-count {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    background: red;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.notif-dropdown {
+    display: none;
+    position: absolute;
+    top: 35px;
+    left: 0;
+    background: white;
+    width: 260px;
+    max-height: 320px;
+    overflow-y: auto;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    z-index: 9999;
+}
+
+.notif-title {
+    text-align: center;
+    color: #2a6f75;
+    font-weight: bold;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notif-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+    font-size: 14px;
+    color: #2a2a2a;
+}
+
+.notif-item:hover {
+    background: #f4f7f8;
+}
+
+#notifList p {
+    color: #888;
+    text-align: center;
+    font-size: 14px;
+    padding: 15px 10px;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* ===== محتوى الصفحات ===== */
+
+.container {
+    width: 100%;
+    margin: 30px auto;
+}
+
+/* عنوان صفحة بلاغاتي */
+.page-title {
+    text-align: center;
+    color: #2a6f75;
+    margin-bottom: 25px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* كرت نموذج البلاغ */
+
+.form-card {
+    width: 520px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    margin: 40px auto;
+}
+
+.form-card h2 {
+    text-align: center;
+    color: #2a6f75;
+    font-size: 26px;
+    margin-bottom: 25px;
+}
+
+label {
+    color: #2a6f75;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    margin-bottom: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+textarea {
+    height: 120px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #2a6f75;
+    color: white;
+    font-size: 17px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #245e62;
+}
+
+/* ===== جدول بلاغاتي ===== */
+
+.tickets-table {
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    margin-top: 20px;
+    background: white;
+    border-collapse: collapse;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    overflow: hidden;
+}
+
+.tickets-table th {
+    padding: 14px;
+    background: #eef3f3;
+    font-size: 15px;
+    font-weight: bold;
+    color: #2a6f75;
+    text-align: center;
+}
+
+.tickets-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* الحالة */
+
+.status {
+    padding: 6px 12px;
+    border-radius: 8px;
+    color: white;
+    font-size: 13px;
+    display: inline-block;
+}
+
+.status.new { background: #3498db; }
+.status.resolved { background: #16a085; }
+.status.open { background: #27ae60; }
+.status.on-hold,
+.status.on_hold { background: #d4a017; }
+.status.in_progress { background: #b92929; }
+
+/* ===== أزرار الجدول (مراسلة + تفاصيل) نفس المقاس ===== */
+
+.chat-btn,
+.btn-details {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+/* مراسلة */
+.chat-btn {
+    background: #2a6f75;
+    color: white;
+    text-decoration: none;
+    border: none;
+}
+
+.chat-btn:hover {
+    background: #245e62;
+}
+
+/* تفاصيل */
+.btn-details {
+    background: #ffffff;
+    color: #2a6f75;
+    border: 1px solid #2a6f75;
+    transition: 0.2s ease-in-out;
+}
+
+.btn-details:hover {
+    background: #2a6f75;
+    color: #ffffff;
+}
+
+/* ===== مودال تفاصيل البلاغ ===== */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 9999;
+}
+
+.modal-content {
+    background: #ffffff;
+    width: 380px;
+    margin: 12% auto;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    direction: rtl;
+    text-align: right;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #2a6f75;
+    margin-bottom: 15px;
+}
+
+.modal-content p {
+    margin: 6px 0;
+    font-size: 14px;
+}
+
+.modal-content .close {
+    float: left;
+    font-size: 22px;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-content .close:hover {
+    color: #000;
+}
