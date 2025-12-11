@@ -27,9 +27,9 @@ def home():
 # تسجيل الدخول
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    error_msg = None          # لرسالة الخطأ العامة (اسم المستخدم/كلمة المرور)
-    arabic_error = None       # لرسالة "غير مسموح باستخدام الحروف العربية"
-    employee_value = ""       # عشان نرجّع رقم الموظف اللي كتبه
+    error_msg = None          
+    arabic_error = None      
+    employee_value = ""      
 
     if request.method == 'POST':
         employee_id = request.form['employee_id'].strip()
@@ -274,7 +274,6 @@ def dashboard():
     """, (employee_id,))
     resolved = cursor.fetchone()[0]
 
-    #  آخر التذاكر (الجديدة و النشطة) مع كل التفاصيل
     cursor.execute("""
         SELECT 
             t.ticket_id,       -- 0
@@ -425,9 +424,8 @@ def resolve_ticket(ticket_id):
 def reject_ticket(ticket_id):
     try:
         reason = request.form['reason']
-        rejected_by = session['employee_id']   # موظف الـ IT اللي رفض البلاغ
+        rejected_by = session['employee_id']  
 
-        # تحديث حالة التذكرة إلى Rejected مع السبب واسم الرافض
         cursor.execute("""
             UPDATE tickets
             SET 
@@ -539,7 +537,6 @@ def assign_ticket_auto(ticket_id, category):
 
 
 # -----------------------------------
-# إعادة توزيع التذكرة تلقائياً  
 def reassign_expired_tickets():
     cursor.execute("""
         SELECT ticket_id, assigned_to, category
@@ -573,5 +570,6 @@ scheduler.start()
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
+
 
 
