@@ -10,7 +10,6 @@ def contains_arabic(text):
 app = Flask(__name__)
 app.secret_key = "secret_key_for_session"
 
-# ✅ الاتصال بقاعدة البيانات
 conn = psycopg2.connect(
     host="localhost",
     database="aiops_tickets",
@@ -25,7 +24,7 @@ def home():
     return redirect('/login')
 
 # -----------------------------------
-# ✅ تسجيل الدخول
+# تسجيل الدخول
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error_msg = None          # لرسالة الخطأ العامة (اسم المستخدم/كلمة المرور)
@@ -37,7 +36,6 @@ def login():
         password = request.form['password']
         employee_value = employee_id
 
-        # ✅ أولاً: منع الحروف العربية في رقم الموظف/كلمة المرور
         if contains_arabic(employee_id) or contains_arabic(password):
             arabic_error = "غير مسموح باستخدام الحروف العربية"
             return render_template(
@@ -47,7 +45,6 @@ def login():
                 employee_value=employee_value
             )
 
-        # ✅ ثانياً: رقم الموظف لازم يكون أرقام فقط (عشان ما يخرب استعلام الـ DB)
         if not employee_id.isdigit():
             error_msg = "عذراً! اسم المستخدم أو كلمة المرور غير صحيحة، فضلاً تأكد من صحة المعلومات المدخلة."
             return render_template(
@@ -57,7 +54,6 @@ def login():
                 employee_value=employee_value
             )
 
-        # ✅ إذا عدّى الشيكات اللي فوق، نكمل مع قاعدة البيانات
         try:
             cursor.execute("""
                 SELECT employee_id, name 
@@ -76,11 +72,9 @@ def login():
 
                 return redirect('/dashboard' if is_it else '/create_ticket')
 
-            # لو ما فيه مستخدم → بيانات خطأ
             error_msg = "عذراً! اسم المستخدم أو كلمة المرور غير صحيحة، فضلاً تأكد من صحة المعلومات المدخلة."
 
         except Exception as e:
-            # حل مشكلة InFailedSqlTransaction
             conn.rollback()
             error_msg = "حدث خطأ في الاتصال بقاعدة البيانات، الرجاء المحاولة مرة أخرى."
 
@@ -99,7 +93,7 @@ def logout():
     return redirect('/login')
 
 # -----------------------------------
-# ✅ رفع بلاغ
+#  رفع البلاغ
 @app.route('/create_ticket', methods=['GET', 'POST'])
 def create_ticket():
     if 'employee_id' not in session:
@@ -122,7 +116,6 @@ def create_ticket():
         ticket_id = cursor.fetchone()[0]
         conn.commit()
 
-        # 🔥 توزيع تلقائي للتذكرة
         assign_ticket_auto(ticket_id, request.form['category'])
 
         return redirect('/my_tickets')
@@ -131,7 +124,7 @@ def create_ticket():
 
 
 # -----------------------------------
-# ✅ بلاغاتي
+#  بلاغاتي
 @app.route('/my_tickets')
 def my_tickets():
     if 'employee_id' not in session:
@@ -175,7 +168,7 @@ def my_tickets():
     )
 
 # -----------------------------------
-# ✅ الشات + التنبيهات
+#  الشات + التنبيهات
 @app.route('/chat/<int:ticket_id>', methods=['GET', 'POST'])
 def chat(ticket_id):
     if 'employee_id' not in session:
@@ -248,9 +241,7 @@ def chat(ticket_id):
     )
 
 # -----------------------------------
-# ✅ لوحة تحكم IT ✅✅✅ (مصَحَّحة بالكامل)
-# -----------------------------------
-# ✅ لوحة تحكم IT (مع عرض التذاكر المحلولة للموظف)
+#  IT dashboard
 @app.route('/dashboard')
 def dashboard():
     if 'employee_id' not in session:
@@ -258,12 +249,10 @@ def dashboard():
 
     employee_id = session['employee_id']
 
-    # نتأكد إنه من فريق الـ IT
     cursor.execute("SELECT 1 FROM it_team WHERE employee_id=%s", (employee_id,))
     if not cursor.fetchone():
         return "لا تملك صلاحية الدخول"
 
-    # ✅ الإحصائيات
     cursor.execute("""
         SELECT COUNT(*) 
         FROM tickets 
@@ -285,7 +274,7 @@ def dashboard():
     """, (employee_id,))
     resolved = cursor.fetchone()[0]
 
-    # ✅ آخر التذاكر (الجديدة + النشطة) مع كل التفاصيل
+    #  آخر التذاكر (الجديدة و النشطة) مع كل التفاصيل
     cursor.execute("""
         SELECT 
             t.ticket_id,       -- 0
@@ -323,7 +312,6 @@ def dashboard():
             "created_at": r[8],
         })
 
-    # ✅✅✅ التذاكر التي قام الموظف بحلّها (مع كل التفاصيل)
     cursor.execute("""
         SELECT 
             t.ticket_id,       -- 0
@@ -368,7 +356,7 @@ def dashboard():
 
 
 # -----------------------------------
-# ✅ قبول التذكرة
+# قبول التذكرة
 @app.route('/accept_ticket/<int:ticket_id>', methods=['POST'])
 def accept_ticket(ticket_id):
     try:
@@ -397,25 +385,25 @@ def accept_ticket(ticket_id):
 
 # -----------------------------------
 
-# ✅ إنهاء التذكرة
+# إنهاء التذكرة
 @app.route('/resolve_ticket/<int:ticket_id>', methods=['POST'])
 def resolve_ticket(ticket_id):
     try:
-        # نغيّر حالة التذكرة إلى Resolved
+       
         cursor.execute("UPDATE tickets SET status='Resolved' WHERE ticket_id=%s", (ticket_id,))
 
-        # نجيب صاحب البلاغ
+      
         cursor.execute("SELECT employee_id FROM tickets WHERE ticket_id=%s", (ticket_id,))
         owner_id = cursor.fetchone()[0]
 
-        # نرسل له تنبيه
+   
         cursor.execute("""
             INSERT INTO notifications 
             (receiver_id, ticket_id, message, is_read, created_at)
             VALUES (%s, %s, %s, FALSE, NOW())
         """, (owner_id, ticket_id, "✅ تم إغلاق بلاغك بنجاح"))
 
-        # 👈 هنا ننقص الـ workload من موظف الـ IT اللي حل التذكرة
+    
         cursor.execute("""
             UPDATE it_team
             SET workload = GREATEST(workload - 1, 0)
@@ -433,7 +421,6 @@ def resolve_ticket(ticket_id):
 
 # -----------------------------------
 
-# ✅ رفض التذكرة مع حفظ السبب واسم الرافض
 @app.route('/reject_ticket/<int:ticket_id>', methods=['POST'])
 def reject_ticket(ticket_id):
     try:
@@ -450,7 +437,7 @@ def reject_ticket(ticket_id):
             WHERE ticket_id = %s
         """, (rejected_by, reason, ticket_id))
 
-        # جلب صاحب البلاغ لإرسال تنبيه له
+    
         cursor.execute("SELECT employee_id FROM tickets WHERE ticket_id=%s", (ticket_id,))
         owner_id = cursor.fetchone()[0]
 
@@ -461,10 +448,10 @@ def reject_ticket(ticket_id):
         """, (
             owner_id,
             ticket_id,
-            "❌ تم رفض بلاغك"
+            " تم رفض بلاغك"
         ))
 
-        # 👈 هنا ننقص الـ workload من موظف الـ IT الرافض
+    
         cursor.execute("""
             UPDATE it_team
             SET workload = GREATEST(workload - 1, 0)
@@ -481,7 +468,6 @@ def reject_ticket(ticket_id):
 
 
 # -----------------------------------
-# ✅ جلب التنبيهات
 @app.route('/get_notifications')
 def get_notifications():
     cursor.execute("""
@@ -508,7 +494,6 @@ def mark_notification(notif_id):
 # -----------------------------------
 
 # -----------------------------------
-# ✅ توزيع التذكرة تلقائياً حسب التخصص وأقل Workload
 def assign_ticket_auto(ticket_id, category):
     cursor.execute("""
         SELECT employee_id 
@@ -522,7 +507,6 @@ def assign_ticket_auto(ticket_id, category):
 
     employee = cursor.fetchone()
 
-    # لو ما فيه أحد بنفس التخصص → نختار Other
     if not employee:
         cursor.execute("""
             SELECT employee_id 
@@ -538,14 +522,12 @@ def assign_ticket_auto(ticket_id, category):
     if employee:
         employee_id = employee[0]
 
-        # تحديث التذكرة ليتم إسنادها للموظف
         cursor.execute("""
             UPDATE tickets
             SET assigned_to = %s
             WHERE ticket_id = %s
         """, (employee_id, ticket_id))
 
-        # زيادة الـ workload للموظف
         cursor.execute("""
             UPDATE it_team
             SET workload = workload + 1
@@ -557,7 +539,7 @@ def assign_ticket_auto(ticket_id, category):
 
 
 # -----------------------------------
-# ✅ إعادة توزيع التذكرة تلقائياً بعد 15 دقيقة لو ما تم قبولها
+# إعادة توزيع التذكرة تلقائياً  
 def reassign_expired_tickets():
     cursor.execute("""
         SELECT ticket_id, assigned_to, category
@@ -565,14 +547,11 @@ def reassign_expired_tickets():
         WHERE status = 'New'
           AND created_at <= NOW() - INTERVAL '15 minutes'
     """)
-    # لاحظي: شلنا AND assigned_to IS NOT NULL
-    # عشان يشمل حتى التذاكر اللي ما انأسندت أبدًا أو اللي رجعنا فكّينا إسنادها
-
+   
     tickets = cursor.fetchall()
 
     for ticket_id, old_employee, category in tickets:
 
-        # لو التذكرة كانت منسندة لموظف → ننقص الـ workload منه
         if old_employee:
             cursor.execute("""
                 UPDATE it_team
@@ -580,16 +559,13 @@ def reassign_expired_tickets():
                 WHERE employee_id = %s
             """, (old_employee,))
 
-        # 🔁 نعيد منطق التوزيع من البداية
         assign_ticket_auto(ticket_id, category)
 
-    # نسوي commit بعد ما نخلص من كل التذاكر
     conn.commit()
 
 
 # -----------------------------------
 
-# ✅ تشغيل جدولة إعادة التوزيع كل دقيقة
 scheduler = BackgroundScheduler()
 scheduler.add_job(reassign_expired_tickets, 'interval', minutes=1)
 scheduler.start()
@@ -597,4 +573,5 @@ scheduler.start()
 
 if __name__ == '__main__':
     app.run(debug=True, use_reloader=False)
+
 
