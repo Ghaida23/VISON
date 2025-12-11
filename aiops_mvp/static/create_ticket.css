@@ -9,7 +9,6 @@ html[dir="rtl"] {
     text-align: right;
 }
 
-/* ===== Navbar موحّد ===== */
 
 .navbar {
     display: flex;
@@ -40,7 +39,6 @@ html[dir="rtl"] {
     padding-bottom: 4px;
 }
 
-/* اسم المستخدم + أيقونة خروج + جرس */
 
 .profile {
     display: flex;
@@ -72,7 +70,6 @@ html[dir="rtl"] {
     opacity: 0.9;
 }
 
-/* التنبيهات */
 
 .notification-wrapper {
     position: relative;
@@ -137,14 +134,12 @@ html[dir="rtl"] {
     font-weight: 500;
 }
 
-/* ===== محتوى الصفحات ===== */
 
 .container {
     width: 100%;
     margin: 30px auto;
 }
 
-/* عنوان صفحة بلاغاتي */
 .page-title {
     text-align: center;
     color: #2a6f75;
@@ -153,7 +148,6 @@ html[dir="rtl"] {
     font-weight: bold;
 }
 
-/* كرت نموذج البلاغ */
 
 .form-card {
     width: 520px;
@@ -206,7 +200,6 @@ textarea {
     background: #245e62;
 }
 
-/* ===== جدول بلاغاتي ===== */
 
 .tickets-table {
     width: 90%;
@@ -236,7 +229,6 @@ textarea {
     text-align: center;
 }
 
-/* الحالة */
 
 .status {
     padding: 6px 12px;
@@ -253,7 +245,6 @@ textarea {
 .status.on_hold { background: #d4a017; }
 .status.in_progress { background: #b92929; }
 
-/* ===== أزرار الجدول (مراسلة + تفاصيل) نفس المقاس ===== */
 
 .chat-btn,
 .btn-details {
@@ -269,7 +260,6 @@ textarea {
     cursor: pointer;
 }
 
-/* مراسلة */
 .chat-btn {
     background: #2a6f75;
     color: white;
@@ -281,7 +271,6 @@ textarea {
     background: #245e62;
 }
 
-/* تفاصيل */
 .btn-details {
     background: #ffffff;
     color: #2a6f75;
@@ -294,7 +283,6 @@ textarea {
     color: #ffffff;
 }
 
-/* ===== مودال تفاصيل البلاغ ===== */
 
 .modal {
     display: none;
@@ -339,3 +327,4 @@ textarea {
 .modal-content .close:hover {
     color: #000;
 }
+
