@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<!-- Navbar موحّد مثل الداشبورد -->
+
 <nav class="navbar">
     <div class="logo">
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
@@ -23,12 +23,12 @@
     <div class="profile">
         <span class="user-name">{{ user_name }}</span>
 
-        <!-- زر تسجيل الخروج كأيقونة حمراء -->
+      
         <a href="/logout" class="logout-btn" title="تسجيل الخروج">
             <i class="fa-solid fa-right-from-bracket"></i>
         </a>
 
-        <!-- جرس التنبيهات -->
+       
         <div class="notification-wrapper" id="notifBell">
             <i class="fa fa-bell"></i>
             <span id="notifCount" class="notif-count" style="display:none;">0</span>
@@ -91,7 +91,7 @@
     </table>
 </div>
 
-<!-- مودال تفاصيل التذكرة -->
+
 <div id="ticketDetailsModal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeTicketDetails()">&times;</span>
@@ -133,7 +133,7 @@ window.addEventListener("click", function (e) {
     }
 });
 
-/* نفس سكربت التنبيهات حق الداشبورد */
+
 document.addEventListener("DOMContentLoaded", function () {
     const bell       = document.getElementById("notifBell");
     const dropdown   = document.getElementById("notifDropdown");
@@ -197,3 +197,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </body>
 </html>
+
