@@ -41,10 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
         currentLang = currentLang === "ar" ? "en" : "ar";
         applyLanguage(currentLang);
 
-        // تغيير اتجاه الصفحة
         document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
 
-        // تغيير زر اللغة
         toggleBtn.textContent = currentLang === "ar" ? "English" : "عربي";
 
     });
@@ -58,3 +56,4 @@ function applyLanguage(lang) {
         el.textContent = translations[lang][key];
     });
 }
+
